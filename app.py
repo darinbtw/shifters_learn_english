@@ -1,31 +1,27 @@
-from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QPushButton, QVBoxLayout, QMessageBox
-from PyQt5.QtGui import QPalette
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QMainWindow, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QPushButton, QVBoxLayout, QMessageBox, QMainWindow, QLineEdit
 import sys
 
-app = QApplication(sys.argv)
-app.setStyle('Fabion')
-print(app)
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        self.setWindowTitle('Учёба английскому!')
 
-button = QPushButton('Click')
-def on_button_clicked():
-    alert = QMessageBox()
-    alert.setText('You clicked the button!')
-    alert.exec_()
-button.clicked.connect(on_button_clicked)
-button.show()
-
-window = QWidget()
-print(window)
-
-layout = QVBoxLayout()
-print(layout)
-layout.addWidget(QPushButton('Главная страница'))
-layout.addWidget(QPushButton('Мой GitHub аккаунт'))
-
-window.setLayout(layout)
-window.show()
-
-app.exec_()
+        layout = QVBoxLayout()
 
 
+        self.label = QLabel('Вам нужно писать перевод к этому слову')
+        layout.addWidget(self.label)
+
+def starts():
+        app = QApplication(sys.argv)
+        app.setStyle('WindowsXP') #WindowsXP, Windows, Fussion, WindowsVista
+        window = MainWindow()
+        window.show()
+        sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    starts()
