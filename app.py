@@ -57,6 +57,10 @@ class MainWindow(QMainWindow):
         self.back_main_menu = QPushButton('Вернуться обратно в меню')
         self.back_main_menu.clicked.connect(self.main_menu)
         self.layout_start.addWidget(self.back_main_menu)
+
+        self.helping = QPushButton('Показать ответ?')
+        self.helping.clicked.connect(self.helps)
+        self.layout_start.addWidget(self.helping)
         
         #Отображает все вставки
         self.new_Widged.setLayout(self.layout_start)
@@ -85,6 +89,14 @@ class MainWindow(QMainWindow):
               random_line = choice(lines).strip()
               english_word, russian_word = random_line.split(' - ')
               return english_word, russian_word
+    
+    def helps(self):
+        if hasattr(self, 'help'):
+            self.help.setText(f'Правильный перевод: {self.correct_translition}')
+            self.help.show()
+        else:
+            self.help = QLabel(f'Правильный перевод: {self.correct_translition}')
+            self.layout_start.addWidget(self.help)
 
 #Запуск всего проекта
 def starts():
