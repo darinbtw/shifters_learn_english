@@ -13,6 +13,7 @@ class MainWindow(QMainWindow):
     def main_menu(self):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
+
         #Текст с небольшим объяснением того, что нужно делать
         layout = QVBoxLayout()
         self.label = QLabel('Вам нужно писать перевод к слову, которую вам предоставят!')
@@ -32,43 +33,50 @@ class MainWindow(QMainWindow):
 
     def start_game(self):
         #Создаём новое окно
-        New_Widged = QWidget()
-        self.setCentralWidget(New_Widged)
+        self.new_Widged = QWidget()
+        self.setCentralWidget(self.new_Widged)
         self.setWindowTitle('Старт игры!')
         
         #Будет добавлять вставки, текст и т.д
-        layout_start = QVBoxLayout()
+        self.layout_start = QVBoxLayout()
 
         #Выводим слово которое нужно перевести
-        self.english_word, self.correct_translition = self.generated_english_words()
-        self.Starts_words = QLabel(f'Переведите слово: {self.english_word}')
-        layout_start.addWidget(self.Starts_words)
+        self.load_new_words()
         
         #Создаётся строчка для ввода пользователя
         self.input_text = QLineEdit()
         self.input_text.setPlaceholderText('Введите перевод слова')
-        layout_start.addWidget(self.input_text)
+        self.layout_start.addWidget(self.input_text)
 
         #Кнопка после которой идёт проверка на правильность перевода
         self.button_check = QPushButton('Проверить перевод')
         self.button_check.clicked.connect(self.check_translate)
-        layout_start.addWidget(self.button_check)
+        self.layout_start.addWidget(self.button_check)
 
         #Кнопка которая возвращает нас в главное меню
         self.back_main_menu = QPushButton('Вернуться обратно в меню')
         self.back_main_menu.clicked.connect(self.main_menu)
-        layout_start.addWidget(self.back_main_menu)
+        self.layout_start.addWidget(self.back_main_menu)
         
         #Отображает все вставки
-        New_Widged.setLayout(layout_start)
+        self.new_Widged.setLayout(self.layout_start)
 
     #Функция которая проверяет ввёдное слово пользователем на правильность перевода
     def check_translate(self):
         user_input = self.input_text.text()
         if user_input.lower() == self.correct_translition.lower():
              QMessageBox.information(self, 'Результат', 'Вы правильно перевели')
+             self.load_new_words()
         else:
              QMessageBox.warning(self, 'Результат', 'Вы неправильно перевели, попробуйте ещё раз!')
+
+    def load_new_words(self):
+        self.english_word, self.correct_translition = self.generated_english_words()
+        if hasattr(self, 'starts_words'):
+            self.starts_words.setText(f'Переведите слово: {self.english_word}')
+        else:
+            self.starts_words = QLabel(f'Переведите слово: {self.english_word}')
+            self.layout_start.addWidget(self.starts_words)
 
     #Генерирует слово из words.txt
     def generated_english_words(self):
