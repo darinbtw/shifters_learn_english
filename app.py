@@ -20,22 +20,54 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.label)
 
         #Создаётся другой текст с вопросом
-        self.label_start = QLabel('Начинаем?')
+        self.label_start = QLabel('Выберите режим:')
         layout.addWidget(self.label_start)
 
         #Создаётся кнопка после которой нас перебрасывает на новое окно
-        self.check_button = QPushButton('Начать игру!')
+        self.check_button = QPushButton('С Английского на Русский')
         self.check_button.clicked.connect(self.start_game)
         layout.addWidget(self.check_button)
 
+        self.russian_game = QPushButton('С Русского на Английский')
+        self.russian_game.clicked.connect(self.russian_game_start)
+        layout.addWidget(self.russian_game)
+
         #Отображает все вставки
         central_widget.setLayout(layout)
+
+    def russian_game_start(self):
+        self.new_widged = QWidget()
+        self.setCentralWidget(self.new_widged)
+        self.setWindowTitle('С Русского на Английский')
+
+        self.layout_rus = QVBoxLayout()
+
+        self.load_new_word_rus()
+
+        self.input_text_user = QLineEdit()
+        self.input_text_user.setPlaceholderText('Впишите сюда перевод слова')
+        self.layout_rus.addWidget(self.input_text_user)
+
+        self.button_click_user = QPushButton('Отправить')
+        self.button_click_user.clicked.connect(self.check_translate_rus)
+        self.layout_rus.addWidget(self.button_click_user)
+
+        self.new_widged.setLayout(self.layout_rus)
+
+    def check_translate_rus(self):
+        user_input_text = self.input_text_user.text()
+
+        if user_input_text.lower() == self.correct_translition_rus.lower():
+            QMessageBox.information(self, 'Результат', 'Вы правильно перевели')
+            self.load_new_word_rus()
+        else:
+            QMessageBox.warning(self, 'Результат', 'Вы не правильно перевели!')
 
     def start_game(self):
         #Создаём новое окно
         self.new_Widged = QWidget()
         self.setCentralWidget(self.new_Widged)
-        self.setWindowTitle('Старт игры!')
+        self.setWindowTitle('С Английского на Русский')
         
         #Будет добавлять вставки, текст и т.д
         self.layout_start = QVBoxLayout()
@@ -90,6 +122,21 @@ class MainWindow(QMainWindow):
               english_word, russian_word = random_line.split(' - ')
               return english_word, russian_word
     
+    def load_new_word_rus(self):
+        self.russian_word, self.correct_translition_rus = self.generated_russian_words()
+        if hasattr(self, 'starts_words_rus'):
+            self.starts_words_rus.setText(f'Переведите слово: {self.russian_word}')
+        else:
+            self.starts_words_rus = QLabel(f'Переведите слово: {self.russian_word}')
+            self.layout_rus.addWidget(self.starts_words_rus)
+            
+    def generated_russian_words(self):
+        with open('russian_words.txt', 'r', encoding='UTF-8') as file1:
+            line1 = file1.readlines()
+            random_line1 = choice(line1).strip()
+            russian_words1, english_words1 = random_line1.split(' - ')
+            return russian_words1,english_words1
+    
     def helps(self):
         if hasattr(self, 'help'):
             self.help.setText(f'Правильный перевод: {self.correct_translition}')
@@ -101,7 +148,7 @@ class MainWindow(QMainWindow):
 #Запуск всего проекта
 def starts():
         app = QApplication(sys.argv)
-        app.setStyle('WindowsXP') #WindowsXP, Windows, Fussion, WindowsVista
+        app.setStyle('Fussion') #WindowsXP, Windows, Fussion, WindowsVista
         window = MainWindow()   
         window.show()
         sys.exit(app.exec_())
