@@ -51,9 +51,25 @@ class MainWindow(QMainWindow):
         self.button_click_user = QPushButton('Отправить')
         self.button_click_user.clicked.connect(self.check_translate_rus)
         self.layout_rus.addWidget(self.button_click_user)
-
+        
+        self.back_to_main_menu1 = QPushButton('Вернутся в меню')
+        self.back_to_main_menu1.clicked.connect(self.main_menu)
+        self.layout_rus.addWidget(self.back_to_main_menu1)
+        
+        self.russian_help = QPushButton('Показать овтет?')
+        self.russian_help.clicked.connect(self.help_russian)
+        self.layout_rus.addWidget(self.russian_help)
+        
         self.new_widged.setLayout(self.layout_rus)
-
+        
+    def help_russian(self):
+        if hasattr(self, 'help_russian1'):
+            self.help_russian1.setText(f'Показать ответ {self.correct_translition_rus}')
+            self.show()
+        else:
+            self.help_russian1 = QLabel(f'Показать ответ {self.correct_translition_rus}')
+            self.layout_rus.addWidget(self.help_russian1)
+            
     def check_translate_rus(self):
         user_input_text = self.input_text_user.text()
 
