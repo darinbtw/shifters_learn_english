@@ -31,6 +31,10 @@ class MainWindow(QMainWindow):
         self.russian_game = QPushButton('С Русского на Английский')
         self.russian_game.clicked.connect(self.russian_game_start)
         layout.addWidget(self.russian_game)
+        
+        self.english_word_add = QPushButton('Добавить свои английски слова')
+        self.english_word_add.clicked.connect(self.rule_forEnglish_words)
+        layout.addWidget(self.english_word_add)
 
         #Отображает все вставки
         central_widget.setLayout(layout)
@@ -61,6 +65,25 @@ class MainWindow(QMainWindow):
         self.layout_rus.addWidget(self.russian_help)
         
         self.new_widged.setLayout(self.layout_rus)
+        
+    def rule_forEnglish_words(self):
+        self.new_widget3 = QWidget()
+        self.setCentralWidget(self.new_widget3)
+        self.setWindowTitle('Добавить новое английское слово')
+        
+        self.layout2 = QVBoxLayout()
+        
+        self.guide = QLabel('''Как же добавить новое английское слово? Вам нужно создать txt файл,
+в котором будет <Английское слово> <-> тире и <Перевод на русский это слово>
+Пример: apple - яблоко''')
+        self.layout2.addWidget(self.guide)
+        
+        self.new_widget3.setLayout(self.layout2)
+        
+    def add_new_word(self):
+        with open('english_words.txt', '', encoding='UTF=8')as file2:
+            line2 = file2.readline()
+            
         
     def help_russian(self):
         if hasattr(self, 'help_russian1'):
@@ -132,7 +155,7 @@ class MainWindow(QMainWindow):
 
     #Генерирует слово из words.txt
     def generated_english_words(self):
-         with open('words.txt', 'r', encoding='UTF-8') as file:
+         with open('english_words.txt', 'r', encoding='UTF-8') as file:
               lines = file.readlines()
               random_line = choice(lines).strip()
               english_word, russian_word = random_line.split(' - ')
