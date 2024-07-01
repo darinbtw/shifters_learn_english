@@ -2,17 +2,24 @@ from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QMainW
 import sys
 from random import choice
 
+#Запуск своего проекта начинается здесь
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        #создаём название окна
         self.setWindowTitle('Учёба английскому языку!')
+        #Запускаем окно с главным меню
         self.main_menu()
 
+    #главное меню
     def main_menu(self):
+        #Создаём окно
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
+        #Создаём 
         layout = QVBoxLayout()
+        
         self.label = QLabel('Вам нужно писать перевод к слову, которую вам предоставят!')
         layout.addWidget(self.label)
 
