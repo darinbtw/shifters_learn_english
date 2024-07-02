@@ -38,6 +38,10 @@ class MainWindow(QMainWindow):
         self.english_word_add.clicked.connect(self.rule_forEnglish_words)
         layout.addWidget(self.english_word_add)
 
+        self.russian_words_add = QPushButton('Добавить свои русские слова')
+        self.russian_words_add.clicked.connect(self.rule_forRussian_words)
+        layout.addWidget(self.russian_words_add)
+
         central_widget.setLayout(layout)
 
     def russian_game_start(self):
@@ -70,6 +74,44 @@ class MainWindow(QMainWindow):
 
         self.new_widget.setLayout(self.layout_rus)
 
+    def rule_forRussian_words(self):
+        self.new_widget4 = QWidget()
+        self.setCentralWidget(self.new_widget4)
+        self.setWindowTitle('Добавить новое русское слово')
+
+        self.layout_rule = QVBoxLayout()
+
+        self.rule_rus = QLabel('''Как же добавить новое английское слово? Вам нужно создать txt файл,
+в котором будет <Русское слово> <-> тире и <Перевод на английское это слово>
+Пример: яблоко - apple''')
+        self.layout_rule.addWidget(self.rule_rus)
+
+        self.add_new_words_rus = QPushButton('Добавить')
+        self.add_new_words_rus.clicked.connect(self.add_new_word_for_rus)
+        self.layout_rule.addWidget(self.add_new_words_rus)
+
+        self.back_to_menu_rus = QPushButton('Вернуться в главное меню')
+        self.back_to_menu_rus.clicked.connect(self.main_menu)
+        self.layout_rule.addWidget(self.back_to_menu_rus)
+
+        self.new_widget4.setLayout(self.layout_rule)
+
+    def add_new_word_for_rus(self):
+        sus = QFileDialog.Options()
+        file_name1, _ = QFileDialog.getOpenFileName(self, 'выберите файл', '', 'Text Files (*.txt);; All Files(*)', options=sus)
+        if file_name1:
+            self.adding_file(file_name1)
+
+    def adding_file(self, file_name1):
+        try:    
+            with open (file_name1, 'r', encoding='UTF-8')as b:
+                line = b.readline()
+                with open('russian_words.txt', 'a', encoding='UTF-8') as file1:
+                    file1.writelines(line)
+            QMessageBox.information(self, 'Успешно', 'Слово добавленно!')        
+        except Exception as f:
+            QMessageBox.warning(self, 'Ошибка', f'Не удалось добавить слово, {f}')
+
     def rule_forEnglish_words(self):
         self.new_widget3 = QWidget()
         self.setCentralWidget(self.new_widget3)
@@ -90,8 +132,7 @@ class MainWindow(QMainWindow):
         self.back_to_main_menu2.clicked.connect(self.main_menu)
         self.layout2.addWidget(self.back_to_main_menu2)
 
-        self.new_widget3.setLayout(self.layout2)
-    
+        self.new_widget3.setLayout(self.layout2)    
 
     def open_file_dialog(self):
         options = QFileDialog.Options()

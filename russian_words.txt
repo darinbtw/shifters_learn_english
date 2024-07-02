@@ -63,3 +63,4 @@
 авокадо - avocado
 мариновать - marinate
 газировка - soda
+привет - hello
