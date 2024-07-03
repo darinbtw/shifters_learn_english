@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QMainWindow, QWidget, QVBoxLayout, QMessageBox, QFileDialog
+from PyQt5.QtGui import QIcon
 import sys
 from random import choice
 
@@ -6,6 +7,7 @@ from random import choice
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QIcon('main.png'))
         #создаём название окна
         self.setWindowTitle('Учёба английскому языку!')
         #Запускаем окно с главным меню
@@ -17,15 +19,17 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
-        #Создаём 
+        #Создаём переменную которая отвечает за вставки в окно 
         layout = QVBoxLayout()
         
+        #Отображаем заплонированный текст
         self.label = QLabel('Вам нужно писать перевод к слову, которую вам предоставят!')
         layout.addWidget(self.label)
 
         self.label_start = QLabel('Выберите режим:')
         layout.addWidget(self.label_start)
 
+        #Тут мы создаём кнопку с текстом и куда это будет направлять
         self.check_button = QPushButton('С Английского на Русский')
         self.check_button.clicked.connect(self.start_game)
         layout.addWidget(self.check_button)
@@ -42,8 +46,10 @@ class MainWindow(QMainWindow):
         self.russian_words_add.clicked.connect(self.rule_forRussian_words)
         layout.addWidget(self.russian_words_add)
 
+        #В окне мы создаём виджеты за которые отвечает переменная layout
         central_widget.setLayout(layout)
 
+    #Первый режим игры с Русского на Английский
     def russian_game_start(self):
         self.new_widget = QWidget()
         self.setCentralWidget(self.new_widget)
@@ -56,6 +62,7 @@ class MainWindow(QMainWindow):
 
         self.load_new_word_rus()
 
+        #С помощью QlineEdit создаём поле для ввода
         self.input_text_user = QLineEdit()
         self.input_text_user.setPlaceholderText('Впишите сюда перевод слова')
         self.layout_rus.addWidget(self.input_text_user)
@@ -74,6 +81,7 @@ class MainWindow(QMainWindow):
 
         self.new_widget.setLayout(self.layout_rus)
 
+    #Загрузить новые слова
     def rule_forRussian_words(self):
         self.new_widget4 = QWidget()
         self.setCentralWidget(self.new_widget4)
@@ -95,19 +103,20 @@ class MainWindow(QMainWindow):
         self.layout_rule.addWidget(self.back_to_menu_rus)
 
         self.new_widget4.setLayout(self.layout_rule)
-
+    #Создаётся загрузчик файла
     def add_new_word_for_rus(self):
         sus = QFileDialog.Options()
         file_name1, _ = QFileDialog.getOpenFileName(self, 'выберите файл', '', 'Text Files (*.txt);; All Files(*)', options=sus)
         if file_name1:
             self.adding_file(file_name1)
 
+    #Добавляем в слова из загрзженного txt файла
     def adding_file(self, file_name1):
         try:    
             with open (file_name1, 'r', encoding='UTF-8')as b:
                 line = b.readline()
                 with open('russian_words.txt', 'a', encoding='UTF-8') as file1:
-                    file1.writelines(line)
+                    file1.write(line.strip() + '\n')
             QMessageBox.information(self, 'Успешно', 'Слово добавленно!')        
         except Exception as f:
             QMessageBox.warning(self, 'Ошибка', f'Не удалось добавить слово, {f}')
@@ -136,7 +145,6 @@ class MainWindow(QMainWindow):
 
     def open_file_dialog(self):
         options = QFileDialog.Options()
-        options |= QFileDialog.ReadOnly
         file_name , _ = QFileDialog.getOpenFileName(self, 'Выберите файл','', 'Text Files (*.txt);;All Files(*)', options=options)
         if file_name:
             self.add_new_word(file_name)
@@ -146,11 +154,12 @@ class MainWindow(QMainWindow):
             with open(file_name, 'r', encoding='UTF-8') as file:
                 lines = file.readline()
                 with open('english_words.txt', 'a', encoding='UTF-8') as english_word:
-                    english_word.writelines(lines)
+                    english_word.write(lines.strip() + '\n')
             QMessageBox.information(self, 'Успех', 'Слова успешны добавлены')
         except Exception as e:
             QMessageBox.warning(self, 'Ошибка', f'Не удалось добавить слова: {e}')
 
+    #Здесь отображаем ответы
     def help_russian(self):
         if hasattr(self, 'help_russian1'):
             self.help_russian1.setText(f'Ответ: {self.correct_translition_rus}')
@@ -158,6 +167,7 @@ class MainWindow(QMainWindow):
             self.help_russian1 = QLabel(f'Ответ: {self.correct_translition_rus}')
             self.layout_rus.addWidget(self.help_russian1)
 
+    #Проверяем правильный ли тут переводы и если правильно то загружаем новое слово
     def check_translate_rus(self):
         user_input_text = self.input_text_user.text()
 
@@ -167,6 +177,7 @@ class MainWindow(QMainWindow):
         else:
             QMessageBox.warning(self, 'Результат', 'Вы не правильно перевели!')
 
+    #второй режим
     def start_game(self):
         self.new_widget = QWidget()
         self.setCentralWidget(self.new_widget)
@@ -204,7 +215,8 @@ class MainWindow(QMainWindow):
             self.load_new_words()
         else:
             QMessageBox.warning(self, 'Результат', 'Вы неправильно перевели, попробуйте ещё раз!')
-
+    
+    #Загрузка новых слов для второго режима
     def load_new_words(self):
         self.english_word, self.correct_translition = self.generated_english_words()
         self.starts_words.setText(f'Переведите слово: {self.english_word}')
@@ -215,11 +227,13 @@ class MainWindow(QMainWindow):
             random_line = choice(lines).strip()
             english_word, russian_word = random_line.split(' - ')
             return english_word, russian_word
-
+    
+    #Загрузка новых слов для первого режима
     def load_new_word_rus(self):
         self.russian_word, self.correct_translition_rus = self.generated_russian_words()
         self.starts_words_rus.setText(f'Переведите слово: {self.russian_word}')
 
+    #Загрузка новых слов для первого режима, когда вызывает функция load_new_word_rus
     def generated_russian_words(self):
         with open('russian_words.txt', 'r', encoding='UTF-8') as file1:
             lines = file1.readlines()
@@ -227,6 +241,7 @@ class MainWindow(QMainWindow):
             russian_words1, english_words1 = random_line1.split(' - ')
             return russian_words1, english_words1
 
+    #показывает ответ для второго режима
     def helps(self):
         if hasattr(self, 'help'):
             self.help.setText(f'Ответ: {self.correct_translition}')
