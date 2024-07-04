@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QMainWindow, QWidget, QVBoxLayout, QMessageBox, QFileDialog
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
 import sys
 from random import choice
 
@@ -10,6 +11,8 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon('main.png'))
         #создаём название окна
         self.setWindowTitle('Учёба английскому языку!')
+
+        self.setFixedSize(500,200)
         #Запускаем окно с главным меню
         self.main_menu()
 
