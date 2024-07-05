@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QLineEdit, QMainWindow, QWidget, QVBoxLayout, QMessageBox, QFileDialog
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
 import sys
 from random import choice
+import os
 
 #Запуск своего проекта начинается здесь
 class MainWindow(QMainWindow):
@@ -118,7 +118,7 @@ class MainWindow(QMainWindow):
         try:    
             with open (file_name1, 'r', encoding='UTF-8')as b:
                 line = b.readline()
-                with open('russian_words.txt', 'a', encoding='UTF-8') as file1:
+                with open(self.resource_path('russian_words.txt'), 'a', encoding='UTF-8') as file1:
                     file1.write(line.strip() + '\n')
             QMessageBox.information(self, 'Успешно', 'Слово добавленно!')        
         except Exception as f:
@@ -156,7 +156,7 @@ class MainWindow(QMainWindow):
         try:
             with open(file_name, 'r', encoding='UTF-8') as file:
                 lines = file.readline()
-                with open('english_words.txt', 'a', encoding='UTF-8') as english_word:
+                with open(self.resource_path('english_words.txt'), 'a', encoding='UTF-8') as english_word:
                     english_word.write(lines.strip() + '\n')
             QMessageBox.information(self, 'Успех', 'Слова успешны добавлены')
         except Exception as e:
@@ -251,6 +251,11 @@ class MainWindow(QMainWindow):
         else:
             self.help = QLabel(f'Ответ: {self.correct_translition}')
             self.layout_start.addWidget(self.help)
+
+    def resource_path(self, relative_path):
+        """ Получить абсолютный путь к ресурсу, работает как для dev, так и для PyInstaller """
+        base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(base_path, relative_path)
 
 # Запуск всего проекта
 def starts():
